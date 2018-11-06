@@ -35,7 +35,7 @@ public class Util {
 		}
 	}
 	private static String GetString(String url,CloseableHttpClient client_) throws ClientProtocolException, IOException {
-		System.out.println(String.format("%s method for url: %s","get", url));
+		System.err.println(String.format("%s method for url: %s","get", url));
 		HttpGet get = new HttpGet(url);
 		CloseableHttpResponse chr = client_.execute(get);
 		BufferedReader br = new BufferedReader(new InputStreamReader(chr.getEntity().getContent()));
@@ -44,13 +44,13 @@ public class Util {
 		while ((line = br.readLine()) != null) {
 			sb.append(line);
 	    }
-		System.out.println(String.format("res: %s",sb.toString()));
+		System.err.println(String.format("res: %s",sb.toString()));
 		chr.close();
 		return sb.toString();
 	}
 
 	private static void DeleteString(String uri,CloseableHttpClient client_,boolean verbose) throws ClientProtocolException, IOException {
-		System.out.println(String.format("uri in DeleteString: %s", uri));
+		System.err.println(String.format("uri in DeleteString: %s", uri));
 		HttpDelete put = new HttpDelete(uri);
 		if(!verbose) {
 			CloseableHttpResponse chr = client_.execute(put);
@@ -63,13 +63,13 @@ public class Util {
 			while ((line = br.readLine()) != null) {
 				sb.append(line);
 		    }
-			System.out.println(String.format("reply: %s", sb.toString()));
+			System.err.println(String.format("reply: %s", sb.toString()));
 			chr.close();
 		}
 	}
 
 	private static String PostString(String uri,CloseableHttpClient client_,boolean verbose) throws ClientProtocolException, IOException {
-		System.out.println(String.format("uri: %s", uri));
+		System.err.println(String.format("uri: %s", uri));
 		HttpPost put = new HttpPost(uri);
 		if(!verbose) {
 			CloseableHttpResponse chr = client_.execute(put);
@@ -83,14 +83,14 @@ public class Util {
 			while ((line = br.readLine()) != null) {
 				sb.append(line);
 		    }
-			System.out.println(String.format("reply: %s", sb.toString()));
+			System.err.println(String.format("reply: %s", sb.toString()));
 			chr.close();
 			return sb.toString();
 		}
 	}
 
 	private static void PutString(String uri,CloseableHttpClient client_,boolean verbose) throws ClientProtocolException, IOException {
-		System.out.println(String.format("uri: %s", uri));
+		System.err.println(String.format("uri: %s", uri));
 		HttpPut put = new HttpPut(uri);
 		if(!verbose) {
 			CloseableHttpResponse chr = client_.execute(put);
@@ -103,7 +103,7 @@ public class Util {
 			while ((line = br.readLine()) != null) {
 				sb.append(line);
 		    }
-			System.out.println(String.format("reply: %s", sb.toString()));
+			System.err.println(String.format("reply: %s", sb.toString()));
 			chr.close();
 		}
 	}
@@ -111,19 +111,19 @@ public class Util {
 		FileReader fr = null;
 		JSONObject res = null;
 		try {
-			System.out.println("storageManager gonna open: "+fname);
+			System.err.println("storageManager gonna open: "+fname);
 			fr = new FileReader(fname);
 			StringBuilder sb = new StringBuilder();
 	        int character;
 	        while ((character = fr.read()) != -1) {
 	        		sb.append((char)character);
 	        }
-	        System.out.println("found "+sb.toString());
+	        System.err.println("found "+sb.toString());
 			fr.close();
 			res = (JSONObject) (new JSONTokener(sb.toString())).nextValue();
 		}
 		catch(Exception e) {
-			System.out.println("found nothing");
+			System.err.println("found nothing");
 			res = new JSONObject();
 		}
 		return res;

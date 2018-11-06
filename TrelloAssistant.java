@@ -28,14 +28,14 @@ public class TrelloAssistant {
 		token_ = token;
 	}
 	public JSONArray getCardsInList(String listid) throws Exception {
-		System.out.println(String.format("id: %s", listid));
+		System.err.println(String.format("id: %s", listid));
 		String uri = 
 				String.format(
 						"https://api.trello.com/1/lists/%s/cards?key=%s&token=%s&fields=name,due,dueComplete,id", 
 						listid,key_,token_);
 		String line = HttpString(uri,client_,true,HTTPMETHOD.GET);
 		JSONArray res = new JSONArray(line);
-		System.out.println(String.format("res.len = %d", res.length()));
+		System.err.println(String.format("res.len = %d", res.length()));
 		return res;
 	}
 	public void setCardDuedone(String cardid,boolean duedone) throws Exception {
@@ -48,12 +48,12 @@ public class TrelloAssistant {
 		HttpString(uri,client_,true,HTTPMETHOD.PUT);
 	}
 	public void setLabel(String cardid, String labelColor) throws Exception {
-		System.out.println(String.format("cardid=%s, label=%s", cardid,labelColor));
+		System.err.println(String.format("cardid=%s, label=%s", cardid,labelColor));
 		String uri = String.format("https://api.trello.com/1/cards/%s/labels?key=%s&token=%s&color=%s&name=failed", cardid,key_,token_,labelColor);
 		HttpString(uri,client_,true,HTTPMETHOD.POST);
 	}
 	public void moveCard(String cardid, String newListId) throws Exception {
-		System.out.println(String.format("cardid=%s, newListId=%s", cardid,newListId));
+		System.err.println(String.format("cardid=%s, newListId=%s", cardid,newListId));
 		String uri = String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s&idList=%s", cardid,key_,token_,newListId);
 		HttpString(uri,client_,true,HTTPMETHOD.PUT);
 	}
