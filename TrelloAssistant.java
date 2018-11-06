@@ -31,8 +31,9 @@ public class TrelloAssistant {
 		System.err.println(String.format("id: %s", listid));
 		String uri = 
 				String.format(
-						"https://api.trello.com/1/lists/%s/cards?key=%s&token=%s&fields=name,due,dueComplete,id", 
-						listid,key_,token_);
+						"https://api.trello.com/1/lists/%s/cards?key=%s&token=%s&fields=%s", 
+						listid,key_,token_,
+						"name,due,dueComplete,id");
 		String line = HttpString(uri,client_,true,HTTPMETHOD.GET);
 		JSONArray res = new JSONArray(line);
 		System.err.println(String.format("res.len = %d", res.length()));
@@ -77,8 +78,9 @@ public class TrelloAssistant {
 	 * 	checklist : JSONArray
 	 */
 	public JSONObject addCard(String idList,JSONObject card) throws Exception {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+//		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		SimpleDateFormat dateFormat = com.github.nailbiter.util.Util.
 		String uri = String.format("https://api.trello.com/1/cards?key=%s&token=%s&idList=%s&name=%s%s", 
 				key_,
 				token_,
