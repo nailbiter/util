@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -128,5 +130,9 @@ public class Util {
 		}
 		return res;
 	}
-
+	public static SimpleDateFormat GetTrelloDateFormat() {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		return dateFormat;
+	}
 }
