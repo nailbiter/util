@@ -78,9 +78,7 @@ public class TrelloAssistant {
 	 * 	checklist : JSONArray
 	 */
 	public JSONObject addCard(String idList,JSONObject card) throws Exception {
-//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-//		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-		SimpleDateFormat dateFormat = com.github.nailbiter.util.Util.
+		SimpleDateFormat dateFormat = Util.GetTrelloDateFormat();
 		String uri = String.format("https://api.trello.com/1/cards?key=%s&token=%s&idList=%s&name=%s%s", 
 				key_,
 				token_,
