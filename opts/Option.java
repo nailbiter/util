@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.nailbiter.util.TableBuilder;
+
 import de.vandermeer.asciitable.AsciiTable;
 import gnu.getopt.Getopt;
-import util.TableBuilder;
 
 public class Option {
 	public static final String DEFARGNAME = "ARG";
