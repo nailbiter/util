@@ -78,8 +78,8 @@ public class TableBuilder {
 	public String toString()
 	{
 		for(int i = 0;i < lengths.size(); i++)
-			System.out.print(lengths.get(i)+" ");
-		System.out.println("");
+			System.err.print(lengths.get(i)+" ");
+		System.err.println("");
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < tokens.size(); i++)
 		{
