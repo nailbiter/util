@@ -45,8 +45,23 @@ public class TrelloAssistant {
 		HttpString(uri,client_,true,HTTPMETHOD.POST);
 	}
 	public void moveCard(String cardid, String newListId) throws Exception {
+//		System.err.println(String.format("cardid=%s, newListId=%s", cardid,newListId));
+//		String uri = String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s&idList=%s", cardid,key_,token_,newListId);
+//		HttpString(uri,client_,true,HTTPMETHOD.PUT);
+		moveCard(cardid,newListId,"bottom");
+	}
+	/**
+	 * move with position specified
+	 * @param cardid
+	 * @param newListId
+	 * @param pos "top" or "bottom"
+	 * @throws Exception
+	 */
+	public void moveCard(String cardid, String newListId,String pos) throws Exception {
+		if(!pos.equals("top") && !pos.equals("bottom"))
+			throw new Exception(String.format("uknown position %s", pos));
 		System.err.println(String.format("cardid=%s, newListId=%s", cardid,newListId));
-		String uri = String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s&idList=%s", cardid,key_,token_,newListId);
+		String uri = String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s&idList=%s&pos=%s", cardid,key_,token_,newListId,pos);
 		HttpString(uri,client_,true,HTTPMETHOD.PUT);
 	}
 	public String findListByName(String boardId,String listName) throws Exception {
