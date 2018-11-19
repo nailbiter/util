@@ -135,4 +135,7 @@ public class Util {
 		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 		return dateFormat;
 	}
+	public static String ParseCommandLine(String description) {
+		return null;
+	}
 }
