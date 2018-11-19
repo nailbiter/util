@@ -14,6 +14,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -135,7 +136,30 @@ public class Util {
 		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 		return dateFormat;
 	}
-	public static String ParseCommandLine(String description) {
-		return null;
+	/**
+	 * 
+	 * @param description this parameter is NOT used at the moment
+	 * @param args String[] args, as they are given, e.g. to main()
+	 * @return JSONObject with keys "keys", "others"
+	 */
+	public static String ParseCommandLine(String description,String args[]) throws Exception {
+		String waitingForKey = null;
+		final String KEYPREFIX = "--";
+		JSONObject res = new JSONObject()
+				.put("keys", new JSONObject())
+				.put("others", new JSONArray());
+		for(int i = 0; i < args.length; i++) {
+			if(args[i].startsWith(KEYPREFIX)) {
+				if(waitingForKey!=null)
+					throw new Exception("cannot parse commandline");
+				waitingForKey = args[i].substring(KEYPREFIX.length());
+			} else if(waitingForKey!=null) {
+				res.getJSONObject("keys").put(waitingForKey, args[i]);
+				waitingForKey = null;
+			} else {
+				res.getJSONArray("others").put(args[i]);
+			}
+		}
+		return res.toString();
 	}
 }
