@@ -152,6 +152,18 @@ public class TrelloAssistant {
 		String uri = String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s",id,key_,token_);
 		HttpString(uri,client_,true,HTTPMETHOD.DELETE);
 	}
+	public void renameCard(String id, String newname) throws Exception {
+		String uri = String.format("https://api.trello.com/1/cards/%s?%s",
+				id,
+				JsonToUrl(
+						new JSONObject()
+						.put("key", key_)
+						.put("token", token_)
+						.put("name", newname)
+				)
+			);
+		HttpString(uri,client_,true,HTTPMETHOD.PUT);
+	}
 	public JSONArray getListActions(String listId, JSONObject obj) throws Exception {
 		String uri = String.format("https://api.trello.com/1/lists/%s/actions?%s&fields=type,data,date",
 				listId,keyTokenString());
