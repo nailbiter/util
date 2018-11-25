@@ -2,6 +2,7 @@ package com.github.nailbiter.util;
 
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -53,7 +54,7 @@ public class TrelloAssistant {
 	/**
 	 * move with position specified
 	 * @param cardid
-	 * @param newListId
+	 * @param newListId if board is new, prefix with "BOARDID."
 	 * @param pos "top" or "bottom"
 	 * @throws Exception
 	 */
@@ -61,8 +62,26 @@ public class TrelloAssistant {
 		if(!pos.equals("top") && !pos.equals("bottom"))
 			throw new Exception(String.format("uknown position %s", pos));
 		System.err.println(String.format("cardid=%s, newListId=%s", cardid,newListId));
-		String uri = String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s&idList=%s&pos=%s", cardid,key_,token_,newListId,pos);
+		JSONObject obj = new JSONObject()
+				.put("key", key_)
+				.put("token", token_)
+				.put("pos", pos);
+		if(newListId.contains(".")) {
+			String[] split = newListId.split("\\.");
+			System.err.format("split: \"%s\", \"%s\"\n",split[0],split[1]);
+			obj.put("idBoard", split[0]);
+			newListId = split[1];
+		}
+		obj.put("idList", newListId);
+		String uri = String.format("https://api.trello.com/1/cards/%s?%s", cardid,JsonToUrl(obj));
 		HttpString(uri,client_,true,HTTPMETHOD.PUT);
+	}
+	private static String JsonToUrl(JSONObject obj){
+		ArrayList<String> args = new ArrayList<String>();
+		for(String key:obj.keySet()) {
+			args.add(String.format("%s=%s", key,obj.getString(key)));
+		}
+		return String.join("&", args);
 	}
 	public String findListByName(String boardId,String listName) throws Exception {
 		String uri = 
