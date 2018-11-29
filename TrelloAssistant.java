@@ -13,7 +13,7 @@ import static com.github.nailbiter.util.Util.HttpString;
 import static com.github.nailbiter.util.Util.HTTPMETHOD;
 
 public class TrelloAssistant {
-	private static final String FIELDS = "name,due,dueComplete,id,labels,url";
+	private static final String FIELDS = "name,due,dueComplete,id,labels,shortUrl";
 	String key_, token_;
 	CloseableHttpClient client_ = HttpClients.createDefault();
 	public TrelloAssistant(String key, String token) {
