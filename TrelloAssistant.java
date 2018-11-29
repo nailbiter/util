@@ -3,7 +3,6 @@ package com.github.nailbiter.util;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -14,7 +13,7 @@ import static com.github.nailbiter.util.Util.HttpString;
 import static com.github.nailbiter.util.Util.HTTPMETHOD;
 
 public class TrelloAssistant {
-	private static final String FIELDS = "name,due,dueComplete,id,labels";
+	private static final String FIELDS = "name,due,dueComplete,id,labels,url";
 	String key_, token_;
 	CloseableHttpClient client_ = HttpClients.createDefault();
 	public TrelloAssistant(String key, String token) {
