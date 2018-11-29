@@ -162,4 +162,11 @@ public class Util {
 		}
 		return res.toString();
 	}
+	public static String CutString(String in,int maxlen) {
+		if(in.length()<=maxlen) {
+			return in;
+		} else {
+			return in.substring(0, maxlen)+"...";
+		}
+	}
 }

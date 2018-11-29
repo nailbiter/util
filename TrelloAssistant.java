@@ -3,6 +3,7 @@ package com.github.nailbiter.util;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -13,6 +14,7 @@ import static com.github.nailbiter.util.Util.HttpString;
 import static com.github.nailbiter.util.Util.HTTPMETHOD;
 
 public class TrelloAssistant {
+	private static final String FIELDS = "name,due,dueComplete,id,labels";
 	String key_, token_;
 	CloseableHttpClient client_ = HttpClients.createDefault();
 	public TrelloAssistant(String key, String token) {
@@ -23,9 +25,12 @@ public class TrelloAssistant {
 		System.err.println(String.format("id: %s", listid));
 		String uri = 
 				String.format(
-						"https://api.trello.com/1/lists/%s/cards?key=%s&token=%s&fields=%s", 
-						listid,key_,token_,
-						"name,due,dueComplete,id");
+						"https://api.trello.com/1/lists/%s/cards?%s",
+						listid,
+						JsonToUrl(new JSONObject()
+								.put("key", key_)
+								.put("token", token_)
+								.put("fields", FIELDS)));
 		String line = HttpString(uri,client_,true,HTTPMETHOD.GET);
 		JSONArray res = new JSONArray(line);
 		System.err.println(String.format("res.len = %d", res.length()));
@@ -46,9 +51,6 @@ public class TrelloAssistant {
 		HttpString(uri,client_,true,HTTPMETHOD.POST);
 	}
 	public void moveCard(String cardid, String newListId) throws Exception {
-//		System.err.println(String.format("cardid=%s, newListId=%s", cardid,newListId));
-//		String uri = String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s&idList=%s", cardid,key_,token_,newListId);
-//		HttpString(uri,client_,true,HTTPMETHOD.PUT);
 		moveCard(cardid,newListId,"bottom");
 	}
 	/**
