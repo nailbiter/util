@@ -4,6 +4,8 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Pattern;
+
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.json.JSONArray;
@@ -13,7 +15,7 @@ import static com.github.nailbiter.util.Util.HttpString;
 import static com.github.nailbiter.util.Util.HTTPMETHOD;
 
 public class TrelloAssistant {
-	private static final String FIELDS = "name,due,dueComplete,id,labels,shortUrl";
+	private static final String FIELDS = "name,due,dueComplete,id,labels,shortUrl,pos";
 	String key_, token_;
 	CloseableHttpClient client_ = HttpClients.createDefault();
 	public TrelloAssistant(String key, String token) {
@@ -60,7 +62,7 @@ public class TrelloAssistant {
 	 * @throws Exception
 	 */
 	public void moveCard(String cardid, String newListId,String pos) throws Exception {
-		if(!pos.equals("top") && !pos.equals("bottom"))
+		if(!pos.equals("top") && !pos.equals("bottom") && !Pattern.matches("\\d+", pos))
 			throw new Exception(String.format("uknown position %s", pos));
 		System.err.println(String.format("cardid=%s, newListId=%s", cardid,newListId));
 		JSONObject obj = new JSONObject()
