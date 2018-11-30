@@ -107,12 +107,14 @@ public class TrelloAssistant {
 	 */
 	public JSONObject addCard(String idList,JSONObject card) throws Exception {
 		SimpleDateFormat dateFormat = Util.GetTrelloDateFormat();
-		String uri = String.format("https://api.trello.com/1/cards?key=%s&token=%s&idList=%s&name=%s%s", 
-				key_,
-				token_,
-				idList,
-				URLEncoder.encode(card.getString("name")),
-				card.has("due")?("&due="+URLEncoder.encode(dateFormat.format(((Date)card.get("due"))))):"");
+		JSONObject req = new JSONObject()
+				.put("key", key_)
+				.put("token", token_)
+				.put("idList", idList)
+				.put("name", URLEncoder.encode(card.getString("name")));
+		if(card.has("due"))
+			req.put("due", URLEncoder.encode(dateFormat.format(((Date)card.get("due")))));
+		String uri = String.format("https://api.trello.com/1/cards?%s", JsonToUrl(req));
 		String reply = HttpString(uri,client_,true,HTTPMETHOD.POST);
 		JSONObject res = new JSONObject(reply);
 		if(card.has("checklist")) {
