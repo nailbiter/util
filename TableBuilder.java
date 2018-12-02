@@ -92,7 +92,8 @@ public class TableBuilder {
 		
 		return sb.toString();
 	}
-	public void addToken(String string, int limit) {
+	public TableBuilder addToken(String string, int limit) {
 		addToken(Util.CutString(string, limit));
+		return this;
 	}
 }

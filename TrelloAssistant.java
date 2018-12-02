@@ -37,6 +37,22 @@ public class TrelloAssistant {
 		System.err.println(String.format("res.len = %d", res.length()));
 		return res;
 	}
+	public JSONArray getAllCardsInList(String listid) throws Exception {
+		System.err.println(String.format("id: %s", listid));
+		String uri = 
+				String.format(
+						"https://api.trello.com/1/lists/%s/cards?%s",
+						listid,
+						JsonToUrl(new JSONObject()
+								.put("key", key_)
+								.put("filter", "all")
+								.put("token", token_)
+								.put("fields", FIELDS)));
+		String line = HttpString(uri,client_,true,HTTPMETHOD.GET);
+		JSONArray res = new JSONArray(line);
+		System.err.println(String.format("res.len = %d", res.length()));
+		return res;
+	}
 	public void setCardDuedone(String cardid,boolean duedone) throws Exception {
 		String uri = String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s&dueComplete=%s", 
 				cardid,key_,token_,duedone?"true":"false"); 
