@@ -151,7 +151,8 @@ public class Util {
 		for(int i = 0; i < args.length; i++) {
 			if(args[i].startsWith(KEYPREFIX)) {
 				if(waitingForKey!=null)
-					throw new Exception("cannot parse commandline");
+					throw new Exception(String.format("cannot parse commandline (wfk=\"%s\", args[i]=\"%s\")",
+                                waitingForKey,args[i]));
 				waitingForKey = args[i].substring(KEYPREFIX.length());
 			} else if(waitingForKey!=null) {
 				res.getJSONObject("keys").put(waitingForKey, args[i]);
