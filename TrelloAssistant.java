@@ -60,6 +60,8 @@ public class TrelloAssistant {
 		HttpString(uri,client_,false,HTTPMETHOD.PUT);
 	}
 	public String getCardEmail(String cardid) throws Exception{
+		if(true)
+			throw new Exception("not yet implemented");
 		String uri = null;
 		String p = JsonToUrl(new JSONObject().put("key", key_).put("token", token_));
 		
