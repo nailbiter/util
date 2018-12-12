@@ -15,7 +15,8 @@ import static com.github.nailbiter.util.Util.HttpString;
 import static com.github.nailbiter.util.Util.HTTPMETHOD;
 
 public class TrelloAssistant {
-	private static final String FIELDS = "name,due,dueComplete,id,labels,shortUrl,pos";
+	private static final String FIELDS = "name,due,dueComplete,id,labels,shortUrl,pos,email";
+//	private static final String FIELDS = "all";
 	String key_, token_;
 	CloseableHttpClient client_ = HttpClients.createDefault();
 	public TrelloAssistant(String key, String token) {
@@ -57,6 +58,19 @@ public class TrelloAssistant {
 		String uri = String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s&dueComplete=%s", 
 				cardid,key_,token_,duedone?"true":"false"); 
 		HttpString(uri,client_,false,HTTPMETHOD.PUT);
+	}
+	public String getCardEmail(String cardid) throws Exception{
+		String uri = null;
+		String p = JsonToUrl(new JSONObject().put("key", key_).put("token", token_));
+		
+//		https://trello.com/1/cards/5c0fd9d6a5b42d625a2a4693/markAssociatedNotificationsRead
+		HttpString(String.format("https://trello.com/1/cards/%s/markAssociatedNotificationsRead&%s", cardid,p),client_,true,HTTPMETHOD.POST);
+			
+		uri = String.format("https://trello.com/1/cards/%s?%s&actions=addAttachmentToCard,addChecklistToCard,addMemberToCard,commentCard,copyCommentCard,convertToCardFromCheckItem,createCard,copyCard,deleteAttachmentFromCard,emailCard,moveCardFromBoard,moveCardToBoard,removeChecklistFromCard,removeMemberFromCard,updateCard:idList,updateCard:closed,updateCard:due,updateCard:dueComplete,updateCheckItemStateOnCard,updateCustomFieldItem&actions_display=true&action_memberCreator_fields=fullName,initials,idEnterprise,idMemberReferrer,memberType,username,avatarHash,bio,bioData,confirmed,products,url,idPremOrgsAdmin&action_reactions=true&members=true&member_fields=fullName,initials,idEnterprise,idMemberReferrer,memberType,username,avatarHash,bio,bioData,confirmed,products,url,status&attachments=true&fields=email&checklists=all&checklist_fields=all&list=true&pluginData=true&customFieldItems=true&actions_limit=50",
+				cardid,p);
+		String line = HttpString(uri,client_,true,HTTPMETHOD.GET);
+		JSONObject obj = new JSONObject(line);
+		return obj.getString("email");
 	}
 	public void archiveCard(String cardid) throws Exception {
 		String uri = String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s&closed=true", cardid,key_,token_);
