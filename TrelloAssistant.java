@@ -132,7 +132,9 @@ public class TrelloAssistant {
 		}
 		throw new Exception(String.format("no such list: %s", listName));
 	}
-	/*so far we support:
+	/**
+	 * @param card 
+	 * 	so far we support:
 	 * 	name : String
 	 * 	due : Date
 	 * 	checklist : JSONArray
