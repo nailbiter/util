@@ -40,6 +40,12 @@ public class TableBuilder {
 		tokens.add(new ArrayList<String>());
 		return this;
 	}
+	public TableBuilder addTokens(String ...tokens) {
+		newRow();
+		for(String token:tokens)
+			addToken(token);
+		return this;
+	}
 	public TableBuilder addNewlineAndTokens(String t1,String t2,String t3) 
 	{
 		newRow();
