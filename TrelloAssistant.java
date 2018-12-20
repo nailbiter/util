@@ -11,12 +11,13 @@ import org.apache.http.impl.client.HttpClients;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import util.AssistantBotException;
+
 import static com.github.nailbiter.util.Util.HttpString;
 import static com.github.nailbiter.util.Util.HTTPMETHOD;
 
 public class TrelloAssistant {
 	private static final String FIELDS = "name,due,dueComplete,id,labels,shortUrl,pos,email";
-//	private static final String FIELDS = "all";
 	String key_, token_;
 	CloseableHttpClient client_ = HttpClients.createDefault();
 	public TrelloAssistant(String key, String token) {
@@ -61,11 +62,11 @@ public class TrelloAssistant {
 	}
 	public String getCardEmail(String cardid) throws Exception{
 		if(true)
-			throw new Exception("not yet implemented");
+			throw new AssistantBotException(AssistantBotException.Type.NOTYETIMPLEMENTED,
+					"not yet implemented");
 		String uri = null;
 		String p = JsonToUrl(new JSONObject().put("key", key_).put("token", token_));
 		
-//		https://trello.com/1/cards/5c0fd9d6a5b42d625a2a4693/markAssociatedNotificationsRead
 		HttpString(String.format("https://trello.com/1/cards/%s/markAssociatedNotificationsRead&%s", cardid,p),client_,true,HTTPMETHOD.POST);
 			
 		uri = String.format("https://trello.com/1/cards/%s?%s&actions=addAttachmentToCard,addChecklistToCard,addMemberToCard,commentCard,copyCommentCard,convertToCardFromCheckItem,createCard,copyCard,deleteAttachmentFromCard,emailCard,moveCardFromBoard,moveCardToBoard,removeChecklistFromCard,removeMemberFromCard,updateCard:idList,updateCard:closed,updateCard:due,updateCard:dueComplete,updateCheckItemStateOnCard,updateCustomFieldItem&actions_display=true&action_memberCreator_fields=fullName,initials,idEnterprise,idMemberReferrer,memberType,username,avatarHash,bio,bioData,confirmed,products,url,idPremOrgsAdmin&action_reactions=true&members=true&member_fields=fullName,initials,idEnterprise,idMemberReferrer,memberType,username,avatarHash,bio,bioData,confirmed,products,url,status&attachments=true&fields=email&checklists=all&checklist_fields=all&list=true&pluginData=true&customFieldItems=true&actions_limit=50",
@@ -79,8 +80,16 @@ public class TrelloAssistant {
 		HttpString(uri,client_,true,HTTPMETHOD.PUT);
 	}
 	public void setLabel(String cardid, String labelColor) throws Exception {
-		System.err.println(String.format("cardid=%s, label=%s", cardid,labelColor));
-		String uri = String.format("https://api.trello.com/1/cards/%s/labels?key=%s&token=%s&color=%s&name=failed", cardid,key_,token_,labelColor);
+		System.err.println(String.format("cardid=%s, labelColor=%s", cardid,labelColor));
+		String uri = 
+				String.format("https://api.trello.com/1/cards/%s/labels?%s"
+						,cardid
+						,JsonToUrl(new JSONObject()
+								.put("key", key_)
+								.put("token", token_)
+								.put("color", labelColor)
+								.put("name", "failed")
+								));
 		HttpString(uri,client_,true,HTTPMETHOD.POST);
 	}
 	public void moveCard(String cardid, String newListId) throws Exception {
@@ -138,6 +147,7 @@ public class TrelloAssistant {
 	 * 	name : String
 	 * 	due : Date
 	 * 	checklist : JSONArray
+	 *  labelByName : JSONArray
 	 */
 	public JSONObject addCard(String idList,JSONObject card) throws Exception {
 		SimpleDateFormat dateFormat = Util.GetTrelloDateFormat();
