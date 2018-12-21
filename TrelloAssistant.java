@@ -4,14 +4,18 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.regex.Pattern;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import util.AssistantBotException;
+import util.ParseCommentLine;
 
 import static com.github.nailbiter.util.Util.HttpString;
 import static com.github.nailbiter.util.Util.HTTPMETHOD;
@@ -158,10 +162,21 @@ public class TrelloAssistant {
 				.put("name", URLEncoder.encode(card.getString("name")));
 		if(card.has("due"))
 			req.put("due", URLEncoder.encode(dateFormat.format(((Date)card.get("due")))));
+		if( card.has("labelByName") ) {
+			JSONArray labels = card.getJSONArray("labelByName");
+			HashMap<String, String> labelsMap = 
+					GetLabelsName(key_,token_,idList,client_);
+			HashSet<String> labelNames = new HashSet<String>();
+			for(Object o:labels) 
+				labelNames.add(labelsMap.get(((String)o)
+						.substring(ParseCommentLine.TAGSPREF.length())));
+			req.put("idLabels", 
+					URLEncoder.encode(String.join(",", labelNames)));
+		}
 		String uri = String.format("https://api.trello.com/1/cards?%s", JsonToUrl(req));
 		String reply = HttpString(uri,client_,true,HTTPMETHOD.POST);
 		JSONObject res = new JSONObject(reply);
-		if(card.has("checklist")) {
+		if( card.has("checklist") ) {
 			JSONArray checklist = card.getJSONArray("checklist");
 			String checklistName = (String)checklist.remove(0);
 			String id = res.getString("id");
@@ -169,6 +184,33 @@ public class TrelloAssistant {
 		}
 		
 		return res;
+	}
+	private static HashMap<String,String> GetLabelsName(String key, String token, String idList, CloseableHttpClient client) throws JSONException, Exception {
+		HashMap<String, String> res = new HashMap<String,String>();
+		String uri =  String.format("https://api.trello.com/1/boards/%s/labels?%s"
+				,GetListsBoardId(key,token,idList,client)
+				,JsonToUrl(new JSONObject()
+						.put("key", key)
+						.put("token", token)
+						.put("fields", "id,name")));
+		JSONArray labels = 
+				new JSONArray(HttpString(uri,client,true,Util.HTTPMETHOD.GET));
+		for(Object o:labels) {
+			JSONObject obj = (JSONObject)o;
+			res.put(obj.getString("name"), obj.getString("id"));
+		}
+		
+		return res;
+	}
+	private static String GetListsBoardId(String key, String token, String idList, CloseableHttpClient client) throws JSONException, Exception {
+		String uri =  String.format("https://api.trello.com/1/lists/%s?%s"
+				,idList
+				,JsonToUrl(new JSONObject()
+						.put("key", key)
+						.put("token", token)
+						.put("fields", "idBoard")));
+		JSONObject res = new JSONObject(HttpString(uri,client,true,Util.HTTPMETHOD.GET));
+		return res.getString("idBoard");
 	}
 	void addCheckList(String cardId,String checklistName,JSONArray checklist) throws Exception {
 		String uri = String.format("%s?key=%s&token=%s&idCard=%s&name=%s",
