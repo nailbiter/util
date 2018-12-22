@@ -168,8 +168,7 @@ public class TrelloAssistant {
 					GetLabelsName(key_,token_,idList,client_);
 			HashSet<String> labelNames = new HashSet<String>();
 			for(Object o:labels) 
-				labelNames.add(labelsMap.get(((String)o)
-						.substring(ParseCommentLine.TAGSPREF.length())));
+				labelNames.add(labelsMap.get((String)o));
 			req.put("idLabels", 
 					URLEncoder.encode(String.join(",", labelNames)));
 		}
