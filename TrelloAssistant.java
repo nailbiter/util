@@ -145,6 +145,22 @@ public class TrelloAssistant {
 		}
 		throw new Exception(String.format("no such list: %s", listName));
 	}
+	public void setLabelByName(String cardid,String labelname, String listid) throws JSONException, Exception {
+		HashMap<String, JSONObject> labelsMap = 
+				GetLabels(key_,token_,listid,client_);
+		
+//		curl --request POST \
+//		  --url 'https://api.trello.com/1/cards/id/labels?color=color'
+		String uri = String.format("https://api.trello.com/1/cards/%s/labels?%s" 
+				,cardid
+				,JsonToUrl(new JSONObject()
+						.put("key", key_)
+						.put("token", token_)
+						.put("color", labelsMap.get(labelname).getString("color"))
+						.put("name", labelname)
+						));
+		/*String reply = */HttpString(uri,client_,true,HTTPMETHOD.POST);
+	}
 	/**
 	 * @param card 
 	 * 	so far we support:
@@ -164,13 +180,13 @@ public class TrelloAssistant {
 			req.put("due", URLEncoder.encode(dateFormat.format(((Date)card.get("due")))));
 		if( card.has("labelByName") ) {
 			JSONArray labels = card.getJSONArray("labelByName");
-			HashMap<String, String> labelsMap = 
-					GetLabelsName(key_,token_,idList,client_);
-			HashSet<String> labelNames = new HashSet<String>();
+			HashMap<String, JSONObject> labelsMap = 
+					GetLabels(key_,token_,idList,client_);
+			HashSet<String> labelIds = new HashSet<String>();
 			for(Object o:labels) 
-				labelNames.add(labelsMap.get((String)o));
+				labelIds.add(labelsMap.get((String)o).getString("id"));
 			req.put("idLabels", 
-					URLEncoder.encode(String.join(",", labelNames)));
+					URLEncoder.encode(String.join(",", labelIds)));
 		}
 		String uri = String.format("https://api.trello.com/1/cards?%s", JsonToUrl(req));
 		String reply = HttpString(uri,client_,true,HTTPMETHOD.POST);
@@ -184,19 +200,19 @@ public class TrelloAssistant {
 		
 		return res;
 	}
-	private static HashMap<String,String> GetLabelsName(String key, String token, String idList, CloseableHttpClient client) throws JSONException, Exception {
-		HashMap<String, String> res = new HashMap<String,String>();
+	private static HashMap<String,JSONObject> GetLabels(String key, String token, String idList, CloseableHttpClient client) throws JSONException, Exception {
+		HashMap<String, JSONObject> res = new HashMap<String,JSONObject>();
 		String uri =  String.format("https://api.trello.com/1/boards/%s/labels?%s"
 				,GetListsBoardId(key,token,idList,client)
 				,JsonToUrl(new JSONObject()
 						.put("key", key)
 						.put("token", token)
-						.put("fields", "id,name")));
+						.put("fields", "id,name,color")));
 		JSONArray labels = 
 				new JSONArray(HttpString(uri,client,true,Util.HTTPMETHOD.GET));
 		for(Object o:labels) {
 			JSONObject obj = (JSONObject)o;
-			res.put(obj.getString("name"), obj.getString("id"));
+			res.put(obj.getString("name"), obj);
 		}
 		
 		return res;
