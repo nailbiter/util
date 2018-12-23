@@ -149,17 +149,16 @@ public class TrelloAssistant {
 		HashMap<String, JSONObject> labelsMap = 
 				GetLabels(key_,token_,listid,client_);
 		
-//		curl --request POST \
-//		  --url 'https://api.trello.com/1/cards/id/labels?color=color'
+		JSONObject labelObj = labelsMap.get(labelname);
+		JSONObject obj = new JSONObject()
+				.put("key", key_)
+				.put("token", token_)
+				.put("name", labelObj.getString("name"));
+		if(labelObj.has("color"))
+			obj.put("color", labelObj.getString("color"));
 		String uri = String.format("https://api.trello.com/1/cards/%s/labels?%s" 
-				,cardid
-				,JsonToUrl(new JSONObject()
-						.put("key", key_)
-						.put("token", token_)
-						.put("color", labelsMap.get(labelname).getString("color"))
-						.put("name", labelname)
-						));
-		/*String reply = */HttpString(uri,client_,true,HTTPMETHOD.POST);
+				,cardid,JsonToUrl(obj));
+		HttpString(uri,client_,true,HTTPMETHOD.POST);
 	}
 	/**
 	 * @param card 
@@ -212,7 +211,8 @@ public class TrelloAssistant {
 				new JSONArray(HttpString(uri,client,true,Util.HTTPMETHOD.GET));
 		for(Object o:labels) {
 			JSONObject obj = (JSONObject)o;
-			res.put(obj.getString("name"), obj);
+			if(obj.has("name"))
+				res.put(obj.getString("name"), obj);
 		}
 		
 		return res;
