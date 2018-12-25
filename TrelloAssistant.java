@@ -154,7 +154,7 @@ public class TrelloAssistant {
 				.put("token", token_)
 				.put("name", labelObj.getString("name"));
 		if(labelObj.has("color")) {
-			String color = labelObj.getString("color");
+			String color = labelObj.optString("color");
 			if( color == null )
 				obj.put("color", JSONObject.NULL);
 			else
