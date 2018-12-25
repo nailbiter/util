@@ -154,8 +154,14 @@ public class TrelloAssistant {
 				.put("key", key_)
 				.put("token", token_)
 				.put("name", labelObj.getString("name"));
-		if(labelObj.has("color"))
-			obj.put("color", labelObj.getString("color"));
+		if(labelObj.has("color")) {
+			String color = labelObj.getString("color");
+			if( color == null )
+				obj.put("color", JSONObject.NULL);
+			else
+				obj.put("color", color);
+		}
+			
 		String uri = String.format("https://api.trello.com/1/cards/%s/labels?%s" 
 				,cardid,JsonToUrl(obj));
 		HttpString(uri,client_,true,HTTPMETHOD.POST);
