@@ -87,10 +87,8 @@ public class TableBuilder {
 			System.err.print(lengths.get(i)+" ");
 		System.err.println("");
 		StringBuilder sb = new StringBuilder();
-		for(int i = 0; i < tokens.size(); i++)
-		{
-			for(int j = 0; j < tokens.get(i).size(); j++)
-			{
+		for(int i = 0; i < tokens.size(); i++) {
+			for(int j = 0; j < tokens.get(i).size(); j++) {
 				sb.append(StringUtils.rightPad(tokens.get(i).get(j), lengths.get(j) + OFFSET));
 			}
 			sb.append("\n");
