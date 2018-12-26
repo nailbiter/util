@@ -14,6 +14,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.github.nailbiter.util.Util.HTTPMETHOD;
+
 import util.AssistantBotException;
 
 import static com.github.nailbiter.util.Util.HttpString;
@@ -283,5 +285,16 @@ public class TrelloAssistant {
 	}
 	private String keyTokenString() {
 		return String.format("key=%s&token=%s",key_,token_);
+	}
+	private JSONObject getTokenObj() {
+		return new JSONObject()
+				.put("key", key_)
+				.put("token", token_);
+	}
+	public void setCardDue(String cardid, Date due) throws Exception {
+		JSONObject obj = getTokenObj()
+				.put("due", URLEncoder.encode(Util.GetTrelloDateFormat().format(due)));
+		String uri = String.format("https://api.trello.com/1/cards/%s?%s", cardid,JsonToUrl(obj));
+		HttpString(uri,client_,true,HTTPMETHOD.PUT);
 	}
 }
