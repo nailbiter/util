@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -146,26 +147,37 @@ public class TrelloAssistant {
 		}
 		throw new Exception(String.format("no such list: %s", listName));
 	}
-	public void setLabelByName(String cardid,String labelname, String listid) throws JSONException, Exception {
+	public static enum SetUnset{
+		SET, UNSET
+	};
+	public void setLabelByName(String cardid,String labelname, String listid, SetUnset s) throws JSONException, Exception {
 		HashMap<String, JSONObject> labelsMap = 
 				GetLabels(key_,token_,listid,client_);
 		
 		JSONObject labelObj = labelsMap.get(labelname);
-		JSONObject obj = new JSONObject()
-				.put("key", key_)
-				.put("token", token_)
-				.put("name", labelObj.getString("name"));
-		if(labelObj.has("color")) {
-			String color = labelObj.optString("color");
-			if( color == null )
-				obj.put("color", JSONObject.NULL);
-			else
-				obj.put("color", color);
+		JSONObject obj = getTokenObj();
+		
+		if(s==SetUnset.SET) {
+			obj.put("name", labelObj.getString("name"));
+			if(labelObj.has("color")) {
+				String color = labelObj.optString("color");
+				if( color == null )
+					obj.put("color", JSONObject.NULL);
+				else
+					obj.put("color", color);
+			}
+				
+			String uri = String.format("https://api.trello.com/1/cards/%s/labels?%s" 
+					,cardid,JsonToUrl(obj));
+			HttpString(uri,client_,true,Util.HTTPMETHOD.POST);
+		} else {
+//			obj.put("idLabel", labelObj.getString("id"));
+			String uri = String.format("https://api.trello.com/1/cards/%s/idLabels/%s?%s" 
+					,cardid
+					,labelObj.getString("id")
+					,JsonToUrl(obj));
+			HttpString(uri,client_,true,Util.HTTPMETHOD.DELETE);
 		}
-			
-		String uri = String.format("https://api.trello.com/1/cards/%s/labels?%s" 
-				,cardid,JsonToUrl(obj));
-		HttpString(uri,client_,true,HTTPMETHOD.POST);
 	}
 	/**
 	 * @param card 
