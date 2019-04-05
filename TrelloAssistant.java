@@ -147,6 +147,9 @@ public class TrelloAssistant {
 		}
 		throw new Exception(String.format("no such list: %s", listName));
 	}
+	public String findBoardByName(String boardName) {
+		return null;
+	}
 	public static enum SetUnset{
 		SET, UNSET
 	};
