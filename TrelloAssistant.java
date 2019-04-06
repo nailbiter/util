@@ -24,6 +24,10 @@ import static com.github.nailbiter.util.Util.HTTPMETHOD;
 
 public class TrelloAssistant {
 	private static final String FIELDS = "name,due,dueComplete,id,labels,shortUrl,pos,email,idList";
+	/**
+	 * @deprecated
+	 */
+	private static final String USERNAME = "nailbiter";
 	String key_, token_;
 	CloseableHttpClient client_ = HttpClients.createDefault();
 	public TrelloAssistant(String key, String token) {
@@ -147,8 +151,16 @@ public class TrelloAssistant {
 		}
 		throw new Exception(String.format("no such list: %s", listName));
 	}
-	public String findBoardByName(String boardName) {
-		return null;
+	public String findBoardByName(String boardName) throws Exception {
+		String uri = 
+				String.format(
+						"https://api.trello.com/1/members/%s/boards?%s"
+						,USERNAME
+						,JsonToUrl(getTokenObj())
+						); 
+		String r = HttpString(uri,client_,true,HTTPMETHOD.GET);
+//		System
+		return "test";
 	}
 	public static enum SetUnset{
 		SET, UNSET
