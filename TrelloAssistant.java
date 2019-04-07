@@ -158,9 +158,14 @@ public class TrelloAssistant {
 						,USERNAME
 						,JsonToUrl(getTokenObj())
 						); 
-		String r = HttpString(uri,client_,true,HTTPMETHOD.GET);
-//		System
-		return "test";
+		JSONArray boards = new JSONArray(HttpString(uri,client_,true,HTTPMETHOD.GET));
+		for(Object o:boards) {
+			JSONObject obj = (JSONObject) o;
+			if( obj.getString("name").equals(boardName) ) {
+				return obj.getString("id");
+			}
+		}
+		return null;
 	}
 	public static enum SetUnset{
 		SET, UNSET
