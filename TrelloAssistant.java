@@ -28,8 +28,8 @@ public class TrelloAssistant {
 	 * @deprecated
 	 */
 	private static final String USERNAME = "nailbiter";
-	String key_, token_;
-	CloseableHttpClient client_ = HttpClients.createDefault();
+	protected String key_, token_;
+	protected CloseableHttpClient client_ = HttpClients.createDefault();
 	public TrelloAssistant(String key, String token) {
 		key_ = key;
 		token_ = token;
@@ -130,7 +130,7 @@ public class TrelloAssistant {
 		String uri = String.format("https://api.trello.com/1/cards/%s?%s", cardid,JsonToUrl(obj));
 		HttpString(uri,client_,true,HTTPMETHOD.PUT);
 	}
-	private static String JsonToUrl(JSONObject obj){
+	protected static String JsonToUrl(JSONObject obj){
 		ArrayList<String> args = new ArrayList<String>();
 		for(String key:obj.keySet()) {
 			args.add(String.format("%s=%s", key,obj.getString(key)));
@@ -315,10 +315,10 @@ public class TrelloAssistant {
 		String res = HttpString(uri,client_,true,HTTPMETHOD.GET);
 		return new JSONArray(res);
 	}
-	private String keyTokenString() {
+	protected String keyTokenString() {
 		return String.format("key=%s&token=%s",key_,token_);
 	}
-	private JSONObject getTokenObj() {
+	protected JSONObject getTokenObj() {
 		return new JSONObject()
 				.put("key", key_)
 				.put("token", token_);
