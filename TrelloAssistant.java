@@ -191,7 +191,6 @@ public class TrelloAssistant {
 					,cardid,JsonToUrl(obj));
 			HttpString(uri,client_,true,Util.HTTPMETHOD.POST);
 		} else {
-//			obj.put("idLabel", labelObj.getString("id"));
 			String uri = String.format("https://api.trello.com/1/cards/%s/idLabels/%s?%s" 
 					,cardid
 					,labelObj.getString("id")
